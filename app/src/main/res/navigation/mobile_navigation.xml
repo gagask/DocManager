@@ -7,19 +7,13 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.docmanager.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        android:name="com.example.docmanager.ui.storage.StorageFragment"
+        android:label="@string/menu_storage"
+        tools:layout="@layout/fragment_storage" />
 
     <fragment
         android:id="@+id/nav_gallery"
-        android:name="com.example.docmanager.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
-
-    <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.example.docmanager.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:name="com.example.docmanager.ui.changes.ChangesFragment"
+        android:label="@string/menu_changes"
+        tools:layout="@layout/fragment_changes" />
 </navigation>
