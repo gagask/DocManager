@@ -108,3 +108,21 @@ fun bindTypeByFile(textView: TextView, file: FileInfo?) {
     textView.visibility = View.VISIBLE
     textView.text = file.path.substringAfterLast('.', "")
 }
+
+@BindingAdapter("imageOrder")
+fun bindImgByBool(imgView: ImageView, sortDescending: Boolean?) {
+
+
+    if (sortDescending == null) return
+
+    val imgUrl = when (sortDescending) {
+        true  -> android.R.drawable.arrow_down_float
+        false -> android.R.drawable.arrow_up_float
+    }
+
+    Glide.with(imgView.context)
+        .load(imgUrl)
+        .apply(RequestOptions()
+            .placeholder(R.drawable.ic_placeholder))
+        .into(imgView)
+}

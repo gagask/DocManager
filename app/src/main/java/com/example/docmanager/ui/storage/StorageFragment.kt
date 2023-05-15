@@ -70,6 +70,11 @@ class StorageFragment : Fragment() {
 
         }
 
+        binding.orderButton.setOnClickListener {
+            viewModel.changeOrder()
+            viewModel.sortFiles()
+        }
+
         binding.backButton.setOnClickListener {
             viewModel.navBack()
         }

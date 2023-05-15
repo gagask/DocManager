@@ -16,13 +16,16 @@ class StorageViewModel : ViewModel() {
     val backButtonEnabled: LiveData<Boolean> = _backButtonEnabled
 
     var sortType: String = "Name"
-    var sortDescending : Boolean = false
+
+    private val _sortDescending = MutableLiveData<Boolean>()
+    val sortDescending: LiveData<Boolean> = _sortDescending
 
     private val _filesInfo = MutableLiveData<List<FileInfo>>()
     val filesInfo: LiveData<List<FileInfo>> = _filesInfo
 
     init {
         _backButtonEnabled.value = false
+        _sortDescending.value = false
         updateFilesInfo()
     }
 
@@ -37,7 +40,21 @@ class StorageViewModel : ViewModel() {
     }
 
     fun sortFiles(){
-        //TODO add sortedByDescending by sortDescending
+        if (_sortDescending.value == true) {
+            _filesInfo.value = when (sortType) {
+                "Name"    ->
+                    _filesInfo.value?.sortedByDescending { file -> file.name }?.sortedBy { file -> !file.isDirectory }
+                "Changed" ->
+                    _filesInfo.value?.sortedByDescending { file -> file.update_date }?.sortedBy { file -> !file.isDirectory }
+                "Type"    ->
+                    _filesInfo.value?.sortedByDescending { file -> file.path.substringAfterLast('.',"") }?.sortedBy { file -> !file.isDirectory }
+                "Size"    ->
+                    _filesInfo.value?.sortedByDescending { file -> file.size }?.sortedBy { file -> !file.isDirectory }
+
+                else -> _filesInfo.value
+            }
+            return
+        }
 
         _filesInfo.value = when (sortType) {
                 "Name"    ->
@@ -53,6 +70,9 @@ class StorageViewModel : ViewModel() {
         }
     }
 
+    fun changeOrder() {
+        _sortDescending.value = !_sortDescending.value!!
+    }
     fun navTo(path: String) {
         currentDir = path
         updateFilesInfo()
