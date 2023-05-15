@@ -106,6 +106,5 @@ fun bindTypeByFile(textView: TextView, file: FileInfo?) {
     }
 
     textView.visibility = View.VISIBLE
-    //TODO исправить, иногда хуйня какая-то
-    textView.text = MimeTypeMap.getFileExtensionFromUrl(file.path)
+    textView.text = file.path.substringAfterLast('.', "")
 }

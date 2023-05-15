@@ -4,10 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Adapter
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.docmanager.FilesInfoAdapter
 import com.example.docmanager.MyViewModelFactory
+import com.example.docmanager.R
 import com.example.docmanager.databinding.FragmentStorageBinding
 
 class StorageFragment : Fragment() {
@@ -31,8 +35,8 @@ class StorageFragment : Fragment() {
 
         val viewModelFactory = MyViewModelFactory()
         viewModel = ViewModelProvider(this, viewModelFactory)[StorageViewModel::class.java]
-
         binding.viewModel = viewModel
+
         binding.filesRecyclerView.adapter = FilesInfoAdapter(
             FilesInfoAdapter.OnClickListener {
                 if (it.isDirectory) {
@@ -43,6 +47,29 @@ class StorageFragment : Fragment() {
                 }
 
             })
+
+        binding.sortTypeSpinner.adapter = ArrayAdapter.createFromResource(
+            requireContext(), R.array.sort_types, android.R.layout.select_dialog_item)
+
+        binding.sortTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                if (parent != null) {
+                    viewModel.sortType = parent.getItemAtPosition(position).toString()
+                    viewModel.sortFiles()
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                return
+            }
+
+        }
+
         binding.backButton.setOnClickListener {
             viewModel.navBack()
         }

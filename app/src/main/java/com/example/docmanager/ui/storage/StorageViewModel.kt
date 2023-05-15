@@ -9,11 +9,14 @@ import java.io.File
 
 class StorageViewModel : ViewModel() {
 
-    val root_path = Environment.getExternalStorageDirectory().toString()
-    var current_dir = root_path
+    private val rootPath = Environment.getExternalStorageDirectory().toString()
+    private var currentDir = rootPath
 
     private val _backButtonEnabled = MutableLiveData<Boolean>()
     val backButtonEnabled: LiveData<Boolean> = _backButtonEnabled
+
+    var sortType: String = "Name"
+    var sortDescending : Boolean = false
 
     private val _filesInfo = MutableLiveData<List<FileInfo>>()
     val filesInfo: LiveData<List<FileInfo>> = _filesInfo
@@ -26,25 +29,39 @@ class StorageViewModel : ViewModel() {
     //TODO make not in IO Thread
     private fun updateFilesInfo(){
 
-
-        val fileItems = File(current_dir).listFiles()?.map { file -> FileInfo(file)}
+        val fileItems = File(currentDir).listFiles()?.map { file -> FileInfo(file)}
         if (fileItems != null) {
-            _filesInfo.value = fileItems.sortedBy { file -> file.name }.sortedBy { file -> !file.isDirectory }
+            _filesInfo.value = fileItems!!
+            sortFiles()
         }
+    }
 
+    fun sortFiles(){
+        //TODO add sortedByDescending by sortDescending
 
+        _filesInfo.value = when (sortType) {
+                "Name"    ->
+                _filesInfo.value?.sortedBy { file -> file.name }?.sortedBy { file -> !file.isDirectory }
+                "Changed" ->
+                _filesInfo.value?.sortedBy { file -> file.update_date }?.sortedBy { file -> !file.isDirectory }
+                "Type"    ->
+                _filesInfo.value?.sortedBy { file -> file.path.substringAfterLast('.',"") }?.sortedBy { file -> !file.isDirectory }
+                "Size"    ->
+                _filesInfo.value?.sortedBy { file -> file.size }?.sortedBy { file -> !file.isDirectory }
 
+            else -> _filesInfo.value
+        }
     }
 
     fun navTo(path: String) {
-        current_dir = path
+        currentDir = path
         updateFilesInfo()
-        _backButtonEnabled.value = current_dir != root_path
+        _backButtonEnabled.value = currentDir != rootPath
     }
 
     fun navBack() {
-        current_dir  = current_dir.substring(0, current_dir.lastIndexOf('/'))
+        currentDir  = currentDir.substring(0, currentDir.lastIndexOf('/'))
         updateFilesInfo()
-        _backButtonEnabled.value = current_dir != root_path
+        _backButtonEnabled.value = currentDir != rootPath
     }
 }

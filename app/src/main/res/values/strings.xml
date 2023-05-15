@@ -10,4 +10,12 @@
     <string name="menu_storage">Storage</string>
     <string name="menu_changes">Changes</string>
     <string name="backButton_text">Back</string>
+
+    <string-array name="sort_types">
+        <item>Name</item>
+        <item>Changed</item>
+        <item>Type</item>
+        <item>Size</item>
+    </string-array>
+
 </resources>
