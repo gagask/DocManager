@@ -40,34 +40,27 @@ class StorageViewModel : ViewModel() {
     }
 
     fun sortFiles(){
-        if (_sortDescending.value == true) {
-            _filesInfo.value = when (sortType) {
-                "Name"    ->
-                    _filesInfo.value?.sortedByDescending { file -> file.name }?.sortedBy { file -> !file.isDirectory }
-                "Changed" ->
-                    _filesInfo.value?.sortedByDescending { file -> file.update_date }?.sortedBy { file -> !file.isDirectory }
-                "Type"    ->
-                    _filesInfo.value?.sortedByDescending { file -> file.path.substringAfterLast('.',"") }?.sortedBy { file -> !file.isDirectory }
-                "Size"    ->
-                    _filesInfo.value?.sortedByDescending { file -> file.size }?.sortedBy { file -> !file.isDirectory }
-
-                else -> _filesInfo.value
-            }
-            return
-        }
-
         _filesInfo.value = when (sortType) {
-                "Name"    ->
-                _filesInfo.value?.sortedBy { file -> file.name }?.sortedBy { file -> !file.isDirectory }
-                "Changed" ->
-                _filesInfo.value?.sortedBy { file -> file.update_date }?.sortedBy { file -> !file.isDirectory }
-                "Type"    ->
-                _filesInfo.value?.sortedBy { file -> file.path.substringAfterLast('.',"") }?.sortedBy { file -> !file.isDirectory }
-                "Size"    ->
-                _filesInfo.value?.sortedBy { file -> file.size }?.sortedBy { file -> !file.isDirectory }
+            "Name"    ->
+                filesSortedWithFlag{ file -> file.name }
+
+            "Changed" ->
+                filesSortedWithFlag { file -> file.update_date }
+
+            "Type"    ->
+                filesSortedWithFlag { file -> file.path.substringAfterLast('.',"") }
+
+            "Size"    ->
+                filesSortedWithFlag { file -> file.size }
 
             else -> _filesInfo.value
-        }
+        }?.sortedBy { file -> !file.isDirectory }
+    }
+
+    private inline fun <R: Comparable<R>> filesSortedWithFlag(crossinline selector: (FileInfo) -> R?) = when(_sortDescending.value) {
+        true -> _filesInfo.value?.sortedByDescending(selector)
+        false -> _filesInfo.value?.sortedBy(selector)
+        else -> _filesInfo.value
     }
 
     fun changeOrder() {
