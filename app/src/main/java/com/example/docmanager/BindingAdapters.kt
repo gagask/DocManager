@@ -106,7 +106,7 @@ fun bindTypeByFile(textView: TextView, file: FileInfo?) {
     }
 
     textView.visibility = View.VISIBLE
-    textView.text = file.path.substringAfterLast('.', "")
+    textView.text = file.getType()
 }
 
 @BindingAdapter("imageOrder")

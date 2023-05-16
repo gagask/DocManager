@@ -41,19 +41,11 @@ class StorageViewModel : ViewModel() {
 
     fun sortFiles(){
         _filesInfo.value = when (sortType) {
-            "Name"    ->
-                filesSortedWithFlag{ file -> file.name }
-
-            "Changed" ->
-                filesSortedWithFlag { file -> file.update_date }
-
-            "Type"    ->
-                filesSortedWithFlag { file -> file.path.substringAfterLast('.',"") }
-
-            "Size"    ->
-                filesSortedWithFlag { file -> file.size }
-
-            else -> _filesInfo.value
+            "Name"    -> filesSortedWithFlag { file -> file.name }
+            "Changed" -> filesSortedWithFlag { file -> file.update_date }
+            "Type"    -> filesSortedWithFlag { file -> file.getType() }
+            "Size"    -> filesSortedWithFlag { file -> file.size }
+            else      -> _filesInfo.value
         }?.sortedBy { file -> !file.isDirectory }
     }
 

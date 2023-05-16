@@ -15,4 +15,6 @@ data class FileInfo(
     var isDirectory: Boolean
 ) {
     constructor(file: File): this(file.name, file.lastModified(), file.length(), file.path, file.isDirectory)
+
+    fun getType() = path.substringAfterLast('.', "")
 }
