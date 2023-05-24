@@ -18,4 +18,9 @@
         <item>Size</item>
     </string-array>
 
+    <string name="type_all">All</string>
+    <string name="type_added">Added</string>
+    <string name="type_deleted">Deleted</string>
+    <string name="type_updated">Updated</string>
+
 </resources>

@@ -1,22 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     tools:context=".ui.changes.ChangesFragment">
 
-    <TextView
-        android:id="@+id/text_gallery"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.docmanager.ui.changes.ChangesViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+
+        <Spinner
+            android:id="@+id/sortTypeSpinner"
+            android:background="@color/design_default_color_primary"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:textSize="20sp"
+            app:layout_constraintTop_toTopOf="@id/orderButton"
+            app:layout_constraintBottom_toBottomOf="@id/orderButton"
+            app:layout_constraintEnd_toStartOf="@id/orderButton"
+            />
+
+        <ImageView
+            android:id="@+id/orderButton"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/design_default_color_primary"
+            app:imageOrder="@{viewModel.sortDescending}"
+            app:layout_constraintBottom_toTopOf="@id/changTypeLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@android:drawable/arrow_down_float" />
+
+
+        <LinearLayout
+            android:id="@+id/changTypeLayout"
+            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="5dp"
+            app:layout_constraintTop_toBottomOf="@id/orderButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/typeAllButton"
+                app:focus_filter = "@{viewModel.pickedFilter}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="10sp"
+                android:text="@string/type_all"/>
+
+            <Button
+                android:id="@+id/typeAddedButton"
+                app:focus_filter = "@{viewModel.pickedFilter}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="10sp"
+                android:text="@string/type_added"/>
+
+            <Button
+                android:id="@+id/typeDeletedButton"
+                app:focus_filter = "@{viewModel.pickedFilter}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="10sp"
+                android:text="@string/type_deleted"/>
+
+            <Button
+                android:id="@+id/typeUpdatedButton"
+                app:focus_filter = "@{viewModel.pickedFilter}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="10sp"
+                android:text="@string/type_updated"/>
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/files_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="5dp"
+            app:listData="@{viewModel.changedFilesInfo}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/changTypeLayout"
+            app:layout_constraintBottom_toBottomOf="parent"
+
+            tools:itemCount="3"
+            tools:listitem="@layout/file_info_item"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -37,17 +37,6 @@ class StorageFragment : Fragment() {
         viewModel = ViewModelProvider(this, viewModelFactory)[StorageViewModel::class.java]
         binding.viewModel = viewModel
 
-        binding.filesRecyclerView.adapter = FilesInfoAdapter(
-            FilesInfoAdapter.OnClickListener {
-                if (it.isDirectory) {
-                    viewModel.navTo(it.path)
-                }
-                else{
-                    // TODO open file somehow
-                }
-
-            })
-
         binding.sortTypeSpinner.adapter = ArrayAdapter.createFromResource(
             requireContext(), R.array.sort_types, android.R.layout.select_dialog_item)
 
@@ -69,6 +58,17 @@ class StorageFragment : Fragment() {
             }
 
         }
+
+        binding.filesRecyclerView.adapter = FilesInfoAdapter(
+            FilesInfoAdapter.OnClickListener {
+                if (it.isDirectory) {
+                    viewModel.navTo(it.path)
+                }
+                else{
+                    // TODO open file somehow
+                }
+
+            })
 
         binding.orderButton.setOnClickListener {
             viewModel.changeOrder()

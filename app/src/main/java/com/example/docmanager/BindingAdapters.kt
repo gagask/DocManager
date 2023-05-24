@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.util.Log
 import android.view.View
 import android.webkit.MimeTypeMap
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
@@ -126,3 +127,16 @@ fun bindImgByBool(imgView: ImageView, sortDescending: Boolean?) {
             .placeholder(R.drawable.ic_placeholder))
         .into(imgView)
 }
+
+
+@SuppressLint("ResourceAsColor")
+@BindingAdapter("focus_filter")
+fun focusedByFilter(button: Button, filter: String?) {
+    if (filter == null) return
+
+    if (button.text == filter)
+        button.setBackgroundColor(R.color.black)
+    else
+        button.setBackgroundColor(R.color.white)
+}
+
