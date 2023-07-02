@@ -1,6 +1,9 @@
 package com.example.docmanager
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.READ_MEDIA_AUDIO
+import android.Manifest.permission.READ_MEDIA_IMAGES
+import android.Manifest.permission.READ_MEDIA_VIDEO
 import android.app.ActivityManager
 import android.content.Context
 import android.content.pm.PackageManager
@@ -8,6 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -54,29 +58,39 @@ class MainActivity : AppCompatActivity() {
 
 
     //Permissions setup
-    private var REQUEST_PERMISSIONS = 12
-    private val PERMISSIONS = arrayOf(READ_EXTERNAL_STORAGE)
-    private var PERMISSIONS_COUNT = 1
+    private var REQUEST_PERMISSIONS = 32123
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private val PERMISSIONS = arrayOf(READ_MEDIA_AUDIO, READ_MEDIA_VIDEO, READ_MEDIA_IMAGES)
+    private val PERMISSIONS_DEPRECATED = arrayOf(READ_EXTERNAL_STORAGE)
+
+
+    private fun requestNotGrantedPermissions(){
+        val permissions = when {
+            Build.VERSION.SDK_INT < 33 -> PERMISSIONS_DEPRECATED
+            else -> PERMISSIONS
+        }.filter {
+                checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED
+            }
+        if (permissions.isNotEmpty())
+            requestPermissions(permissions.toTypedArray(), REQUEST_PERMISSIONS)
+    }
 
     private fun arePermissionsGranted(): Boolean {
-
-        var p: Int = 0
-        while (p < PERMISSIONS_COUNT) {
-            if (checkSelfPermission(PERMISSIONS[p]) != PackageManager.PERMISSION_GRANTED){
+        when {
+            Build.VERSION.SDK_INT < 33 -> PERMISSIONS_DEPRECATED
+            else -> PERMISSIONS
+        }.forEach {
+            if (checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED)
                 return false
-            }
-            p+=1
         }
         return true
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onResume() {
         super.onResume()
-        if (!arePermissionsGranted() && Build.VERSION.SDK_INT < 33) {
-            requestPermissions(PERMISSIONS, REQUEST_PERMISSIONS)
-            //Toast.makeText(this, "Get permission try", Toast.LENGTH_SHORT).show();
-            return
-        }
+        requestNotGrantedPermissions()
     }
 
     override fun onRequestPermissionsResult(
@@ -94,7 +108,8 @@ class MainActivity : AppCompatActivity() {
             //Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
         } else {
 
-            val am:ActivityManager = applicationContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            val am: ActivityManager =
+                applicationContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             am.clearApplicationUserData()
             recreate()
 
